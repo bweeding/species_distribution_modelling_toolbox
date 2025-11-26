@@ -1,131 +1,131 @@
-# Species Distribution Modeling (SDM) dengan MaxEnt Terbobot
+# Species Distribution Modeling (SDM) with Weighted MaxEnt
 
-Repositori ini berisi workflow lengkap untuk pemodelan distribusi spesies menggunakan metode **Maximum Entropy (MaxEnt) dengan pembobotan sampel**. Proyek ini dirancang untuk memprediksi distribusi potensial spesies invasif menggunakan variabel bioklimatik, topografi, dan NDVI dengan memperhitungkan bias spasial dan temporal dalam data kejadian.
+This repository contains a complete workflow for species distribution modeling using **Maximum Entropy (MaxEnt) with sample weighting**. This project is designed to predict the potential distribution of invasive species using bioclimatic, topographic, and NDVI variables while accounting for spatial and temporal bias in occurrence data.
 
-## Deskripsi Proyek
+## Project Description
 
-Proyek ini mengimplementasikan pipeline SDM yang mencakup:
-- **Persiapan data** dari berbagai sumber (GBIF, CABI, publikasi penelitian)
-- **Generasi pseudo-absence** dengan berbagai strategi (random, biased, biased-land-cover)
-- **Pemrosesan variabel prediktif** (bioklimatik, topografi, NDVI)
-- **Pelatihan model MaxEnt terbobot** untuk mengatasi bias sampling
-- **Evaluasi model** dengan metrik ROC-AUC dan PR-AUC (terbobot dan tidak terbobot)
-- **Pemetaan distribusi** untuk kondisi historis dan proyeksi masa depan
-- **Perbandingan set variabel** untuk optimasi model
+This project implements an SDM pipeline that includes:
+- **Data preparation** from multiple sources (GBIF, CABI, research publications)
+- **Pseudo-absence generation** with various strategies (random, biased, biased-land-cover)
+- **Predictive variable processing** (bioclimatic, topographic, NDVI)
+- **Weighted MaxEnt model training** to address sampling bias
+- **Model evaluation** with ROC-AUC and PR-AUC metrics (weighted and unweighted)
+- **Distribution mapping** for historical conditions and future projections
+- **Variable set comparison** for model optimization
 
-## Struktur Proyek
+## Project Structure
 
 ```
 SDM-TOOLBOX/
 │
-├── 0_Iteration.ipynb                    # Notebook utama untuk menjalankan seluruh pipeline
-├── 00_data-preparation.ipynb            # Persiapan dan agregasi data kejadian dari berbagai sumber
-├── 01_specie-distribution.ipynb         # Analisis distribusi spesies dan pembagian train/test
-├── 02_pseudo-absence.ipynb              # Generasi titik pseudo-absence
-├── 03_Bioclim.ipynb                     # Pemrosesan data bioklimatik
-├── 03_predictive-variables.ipynb        # Persiapan variabel prediktif
-├── 04_variable-statistics.ipynb         # Statistik deskriptif variabel
-├── 05_run-model_weight.ipynb            # Pelatihan model MaxEnt terbobot
-├── 06_model-evaluation.ipynb            # Evaluasi performa model
-├── 07_Bioclim_mapping.ipynb             # Pemetaan hasil model
-└── 08_variable_sets_comparison.ipynb    # Perbandingan set variabel
+├── 0_Iteration.ipynb                    # Main notebook to run the entire pipeline
+├── 00_data-preparation.ipynb            # Occurrence data preparation and aggregation from multiple sources
+├── 01_specie-distribution.ipynb         # Species distribution analysis and train/test splitting
+├── 02_pseudo-absence.ipynb              # Pseudo-absence point generation
+├── 03_Bioclim.ipynb                     # Bioclimatic data processing
+├── 03_predictive-variables.ipynb        # Predictive variable preparation
+├── 04_variable-statistics.ipynb         # Variable descriptive statistics
+├── 05_run-model_weight.ipynb            # Weighted MaxEnt model training
+├── 06_model-evaluation.ipynb            # Model performance evaluation
+├── 07_Bioclim_mapping.ipynb             # Bioclim mapping
+└── 08_variable_sets_comparison.ipynb    # Variable set comparison
 ```
 
 ## Workflow
 
-### 1. Persiapan Data (`00_data-preparation.ipynb`)
-- Mengumpulkan data kejadian dari berbagai sumber:
+### 1. Data Preparation (`00_data-preparation.ipynb`)
+- Aggregates occurrence data from multiple sources:
   - GBIF (Global Biodiversity Information Facility)
   - CABI (Centre for Agriculture and Bioscience International)
-  - Publikasi penelitian (Otieno et al. 2019, Peng et al. 2021, dll.)
-  - Data koleksi lapangan
-- Standardisasi format dan kolom
-- Agregasi semua sumber menjadi dataset tunggal
+  - Research publications (Otieno et al. 2019, Peng et al. 2021, etc.)
+  - Field collection data
+- Standardizes formats and columns
+- Combines all sources into a single dataset
 
-### 2. Analisis Distribusi Spesies (`01_specie-distribution.ipynb`)
-- Visualisasi distribusi global spesies
-- Filtering berdasarkan wilayah geografis
-- Pembagian data menjadi training dan testing (70:30)
-- Generasi multiple splits untuk validasi (default: 10 iterasi)
+### 2. Species Distribution Analysis (`01_specie-distribution.ipynb`)
+- Visualizes global species distribution
+- Filters by geographic regions
+- Splits data into training and testing sets (70:30)
+- Generates multiple splits for validation (default: 10 iterations)
 
-### 3. Generasi Pseudo-Absence (`02_pseudo-absence.ipynb`)
-Strategi yang didukung:
-- **Random**: Titik acak di seluruh wilayah
-- **Biased**: Titik acak dengan bias terhadap area yang mudah diakses
-- **Biased-land-cover**: Titik dengan bias berdasarkan tipe tutupan lahan (prioritas untuk hutan)
+### 3. Pseudo-Absence Generation (`02_pseudo-absence.ipynb`)
+Supported strategies:
+- **Random**: Random points across the entire region
+- **Biased**: Random points with bias toward easily accessible areas
+- **Biased-land-cover**: Points with bias based on land cover type (prioritizing forests)
 
-### 4. Pemrosesan Variabel Prediktif (`03_Bioclim.ipynb`, `03_predictive-variables.ipynb`)
-- **Variabel Bioklimatik**: 19 variabel WorldClim (bio1-bio19)
-- **Topografi**: Elevasi dari SRTM
+### 4. Predictive Variable Processing (`03_Bioclim.ipynb`, `03_predictive-variables.ipynb`)
+- **Bioclimatic Variables**: 19 WorldClim variables (bio1-bio19)
+- **Topography**: Elevation from SRTM
 - **NDVI**: Normalized Difference Vegetation Index
-- Dukungan untuk data historis dan proyeksi masa depan (RCP 8.5)
-- Konversi unit (Kelvin ke Celsius) dan penyesuaian CRS
+- Support for historical data and future projections (RCP 8.5)
+- Unit conversion (Kelvin to Celsius) and CRS adjustment
 
-### 5. Pelatihan Model (`05_run-model_weight.ipynb`)
-**Fitur MaxEnt Terbobot:**
-- **Pembobotan berbasis jarak**: Mengurangi pengaruh titik yang terlalu rapat
-- **Pembobotan berbasis sumber data**: Menyesuaikan kualitas data dari berbagai sumber
-- **Pembobotan temporal**: Memberikan bobot lebih tinggi pada data terbaru
-- Konfigurasi model:
-  - Transformasi: Logistic
-  - Beta multiplier: 1.5 (regularisasi)
+### 5. Model Training (`05_run-model_weight.ipynb`)
+**Weighted MaxEnt Features:**
+- **Distance-based weighting**: Reduces influence of overly clustered points
+- **Source-based weighting**: Adjusts for data quality from different sources
+- **Temporal weighting**: Gives higher weight to more recent data
+- Model configuration:
+  - Transform: Logistic
+  - Beta multiplier: 1.5 (regularization)
   - Feature types: Linear, Hinge, Product
 
-### 6. Evaluasi Model (`06_model-evaluation.ipynb`)
-Metrik yang dihitung:
-- **ROC-AUC**: Area Under ROC Curve (terbobot dan tidak terbobot)
-- **PR-AUC**: Precision-Recall AUC (terbobot dan tidak terbobot)
-- **Permutation Importance**: Pentingnya setiap variabel prediktif
+### 6. Model Evaluation (`06_model-evaluation.ipynb`)
+Calculated metrics:
+- **ROC-AUC**: Area Under ROC Curve (weighted and unweighted)
+- **PR-AUC**: Precision-Recall AUC (weighted and unweighted)
+- **Permutation Importance**: Importance of each predictive variable
 
-### 7. Pemetaan dan Visualisasi (`07_Bioclim_mapping.ipynb`)
-- Peta probabilitas kejadian relatif (Relative Occurrence Probability)
-- Perbandingan prediksi historis vs. masa depan
-- Peta perubahan distribusi potensial
+### 7. Mapping and Visualization (`07_Bioclim_mapping.ipynb`)
+- Relative Occurrence Probability (ROP) maps
+- Historical vs. future prediction comparison
+- Maps of potential distribution changes
 
-### 8. Perbandingan Set Variabel (`08_variable_sets_comparison.ipynb`)
-- Evaluasi performa berbagai kombinasi variabel bioklimatik
-- Identifikasi set variabel optimal
+### 8. Variable Set Comparison (`08_variable_sets_comparison.ipynb`)
+- Evaluates performance of various bioclimatic variable combinations
+- Identifies optimal variable sets
 
-## Penggunaan
+## Usage
 
-### Konfigurasi Awal
+### Initial Configuration
 
-Edit notebook `0_Iteration.ipynb` untuk mengatur parameter:
+Edit the `0_Iteration.ipynb` notebook to set parameters:
 
 ```python
-# Pilihan spesies
-specie = 'leptocybe-invasa'  # atau 'thaumastocoris-peregrinus'
+# Species selection
+specie = 'leptocybe-invasa'  # or 'thaumastocoris-peregrinus'
 
-# Wilayah geografis
-training = 'south-east-asia'  # Wilayah untuk pelatihan
-interest = 'south-east-asia'  # Wilayah untuk prediksi/testing
+# Geographic regions
+training = 'south-east-asia'  # Region for training
+interest = 'south-east-asia'  # Region for prediction/testing
 
-# Parameter pseudo-absence
-pseudoabsence = 'biased-land-cover'  # 'random', 'biased', atau 'biased-land-cover'
-count = 10000  # Jumlah titik background
+# Pseudo-absence parameters
+pseudoabsence = 'biased-land-cover'  # 'random', 'biased', or 'biased-land-cover'
+count = 10000  # Number of background points
 
-# Resolusi spasial
-ref_res = (0.01, 0.01)  # derajat (~1000m)
+# Spatial resolution
+ref_res = (0.01, 0.01)  # degrees (~1000m)
 
-# Variabel bioklimatik
-bioclim = [i for i in range(1, 20)]  # Semua 19 variabel
+# Bioclimatic variables
+bioclim = [i for i in range(1, 20)]  # All 19 variables
 
-# Variabel tambahan
-topo1 = True   # Sertakan topografi
-ndvi1 = True   # Sertakan NDVI
+# Additional variables
+topo1 = True   # Include topography
+ndvi1 = True   # Include NDVI
 
-# Jumlah iterasi
+# Number of iterations
 n_iteration = 10
 ```
 
-### Menjalankan Pipeline
+### Running the Pipeline
 
-1. **Jalankan notebook utama**:
+1. **Run the main notebook**:
    ```bash
    jupyter notebook 0_Iteration.ipynb
    ```
 
-2. Notebook utama akan secara otomatis menjalankan notebook-notebook lainnya secara berurutan:
+2. The main notebook will automatically execute other notebooks in sequence:
    - `00_data-preparation.ipynb`
    - `01_specie-distribution.ipynb`
    - `02_pseudo-absence.ipynb`
@@ -140,71 +140,69 @@ n_iteration = 10
 ## Dependencies
 
 ### Python Libraries
-- `pandas` - Manipulasi data
-- `geopandas` - Data geospasial
-- `numpy` - Komputasi numerik
-- `xarray` & `rioxarray` - Data raster multi-dimensi
+- `pandas` - Data manipulation
+- `geopandas` - Geospatial data
+- `numpy` - Numerical computing
+- `xarray` & `rioxarray` - Multi-dimensional raster data
 - `elapid` - Species Distribution Modeling
-- `scikit-learn` - Metrik dan evaluasi model
-- `matplotlib` & `cartopy` - Visualisasi dan pemetaan
-- `dask` - Komputasi paralel (opsional)
+- `scikit-learn` - Model metrics and evaluation
+- `matplotlib` & `cartopy` - Visualization and mapping
+- `dask` - Parallel computing (optional)
 
 ### Data Requirements
-- Data kejadian spesies (CSV dengan kolom lat/lon)
-- Raster bioklimatik (WorldClim atau CORDEX)
-- DEM/SRTM untuk topografi
-- Data NDVI (opsional)
-- Data tutupan lahan untuk pseudo-absence berbasis land-cover
+- Species occurrence data (CSV with lat/lon columns)
+- Bioclimatic rasters (WorldClim or CORDEX)
+- DEM/SRTM for topography
+- NDVI data (optional)
+- Land cover data for land-cover-based pseudo-absence
 
 ## Output
 
-### Struktur Output
+### Output Structure
 ```
 out/
 └── {specie}/
     ├── input/
-    │   ├── train/          # Data training (presence & background)
-    │   ├── test/           # Data testing
-    │   └── worldclim/      # Raster variabel prediktif
+    │   ├── train/          # Training data (presence & background)
+    │   ├── test/           # Testing data
+    │   └── worldclim/      # Predictive variable rasters
     └── output/
         └── exp_{model}_{pseudoabsence}_{region}_{topo}_{ndvi}/
-            ├── *.ela       # Model terlatih
-            ├── *.nc        # Prediksi dalam format NetCDF
-            ├── *.tif       # Prediksi dalam format GeoTIFF
-            └── *.csv       # Data input dan hasil evaluasi
+            ├── *.ela       # Trained models
+            ├── *.nc        # Predictions in NetCDF format
+            ├── *.tif       # Predictions in GeoTIFF format
+            └── *.csv       # Input data and evaluation results
 ```
 
-### File Hasil
-- **Peta distribusi**: PNG files di folder `figs/` dan `docs/`
+### Output Files
+- **Distribution maps**: PNG files in `figs/` and `docs/` folders
 
-## Spesies yang Didukung (Default)
+## Supported Species (Default)
+- **Leptocybe invasa** (Gall wasp on Eucalyptus)
+- **Thaumastocoris peregrinus** (Bronze bug on Eucalyptus)
 
-- **Leptocybe invasa** (Gall wasp pada Eucalyptus)
-- **Thaumastocoris peregrinus** (Bronze bug pada Eucalyptus)
+## Methodology
 
-## Metodologi
+### Weighted MaxEnt
+The weighted MaxEnt model addresses several limitations of standard SDM:
+1. **Spatial bias**: Reduces influence of oversampled areas
+2. **Temporal bias**: Gives higher weight to more recent data
+3. **Data quality**: Adjusts weights based on data source
+4. **Multi-source integration**: Combines data from various sources with different quality levels
 
-### MaxEnt dengan Pembobotan
-Model MaxEnt terbobot mengatasi beberapa keterbatasan SDM standar:
-1. **Bias spasial**: Mengurangi pengaruh area yang terlalu banyak sampling
-2. **Bias temporal**: Memberikan bobot lebih pada data terbaru
-3. **Kualitas data**: Menyesuaikan bobot berdasarkan sumber data
-4. **Integrasi multi-sumber**: Menggabungkan data dari berbagai sumber dengan kualitas berbeda
+### Validation
+- Multiple train/test splits (default: 10 iterations)
+- Evaluation on both training and testing data
+- Weighted metrics for more realistic accuracy assessment
 
-### Validasi
-- Multiple train/test splits (default: 10 iterasi)
-- Evaluasi pada data training dan testing
-- Metrik terbobot untuk akurasi yang lebih realistis
+## Important Notes
 
-## Catatan Penting
+1. **Data Paths**: Ensure paths to bioclimatic data and other rasters are correct in the `03_Bioclim.ipynb` notebook
+2. **Memory**: This process requires sufficient memory for large raster data
+3. **Dask Cluster**: For parallel computing, a Dask cluster is initialized in the main notebook
+4. **Reproducibility**: Use `random_state=42` for reproducible results
 
-1. **Path Data**: Pastikan path ke data bioklimatik dan raster lainnya sudah benar di notebook `03_Bioclim.ipynb`
-2. **Memory**: Proses ini membutuhkan memori yang cukup untuk data raster besar
-3. **Dask Cluster**: Untuk komputasi paralel, cluster Dask diinisialisasi di notebook utama
-4. **Reproducibility**: Gunakan `random_state=42` untuk hasil yang dapat direproduksi
-
-## Kontribusi
+## Contributing
 
 Managing risk in SE Asian forest biosecurity – supporting evidence-based standards for best practice (ACIAR FST/2018/179)
 Sub-project ‘Climate change modelling: Building biosecurity capacity for adaptation and changing risk'
-
