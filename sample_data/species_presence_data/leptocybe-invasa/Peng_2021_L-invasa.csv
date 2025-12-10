@@ -1,0 +1,15 @@
+Pop,Sample Sites,Lon,Lat,Elevation (m),Date,Haplotype,N
+SCDY,"Deyang, Sichuan",104.283333,31.166667,512.3,2019-12,Hap1,32
+SCPZH,"Panzhihua, Sichuan",102.25,26.816667,1137.2,2018-07,"Hap1,Hap3",32
+JXGZ,"Ganzhou, Jiangxi",114.716667,25.6,195.6,2016-07,"Hap1,Hap3",32
+FJSM,"Sanming, Fujian",117.95,26.5,177.6,2019-09,Hap3,32
+HNDZ,"Danzhou, Hainan",108.933333,18.15,24.6,2017-07,Hap3,4
+YNKM,"Kunming, Yunnan",103.166667,26.1,1846.5,2019-07,Hap3,3
+GXFCG1,"Fangchenggang1, Gaungxi",108.016667,22.233333,250,2019-07,"Hap1,Hap2,Hap3",32
+GXFXG2,"Fangchenggang2, Gaungxi",107.783333,21.95,220,2019-10,Hap1Hap3,32
+GXNN1,"Nanning1, Guangxi",108.283333,22.85,143.3,2019-06,"Hap1,Hap3",32
+GXNN2,"Nanning2, Guangxi",108.283333,22.833333,156.4,2019-06,Hap1Hap3,32
+GXWZ,"Wuzhou, Guangxi",111.05,23.05,76.2,2016-07,"Hap1,Hap3",32
+GXLB,"Laibin, Guangxi",108.4,23.266667,361.3,2020-06,Hap3,16
+GXYL,"Yulin, Guangxi",110.016667,22.5,150.46,2019-08,Hap3,3
+GXQZ,"Qinzhou, Guangxi",109.2,21.866667,45.26,2020-07,Hap3,6
